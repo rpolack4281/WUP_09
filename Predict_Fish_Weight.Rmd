@@ -18,26 +18,101 @@ require(tigerstats)
 require(tidyverse)
 ```
 
-# Predicting Fish Weight
+```{r}
+fish<-read.csv(file="Fish.csv")
+```
 
+
+# Predicting Fish Weight
+I predict that most of the fish will be in the triple digits around the 100s or higher.
 
 ## Perch
 
+```{r}
+Perch<-filter(fish, Species=="Perch")
+Perch<-select(Perch, -Species)
+```
+
+
 ### Best Models
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Perch,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+
 
 ### Best Two regressor model
+The best regression model is the one with the highest adjusted R squared value and that is height and width and it has two regressors, so it is the model that we are looking for.
 
 
 ## Pike
+```{r}
+Pike<-filter(fish, Species=="Pike")
+Pike<-select(Pike, -Species)
+```
+
 
 ### Best Models
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Pike,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+
 
 ### Best Two regressor model
+The best model is length 1 and length 2, because it has 2 regressors, so this is the model we are looking for.
+
 
 ## Roach
+```{r}
+Roach<-filter(fish, Species=="Roach")
+Roach<-select(Roach, -Species)
+```
+
 
 ### Best Models
+```{r}
+library(leaps)
+regsubsets.out <-
+    regsubsets(Weight ~ .,
+               data = Roach,
+               nbest = 1,       # 1 best model for each number of predictors
+               nvmax = NULL,    # NULL for no limit on number of variables
+               force.in = NULL, force.out = NULL,
+               method = "exhaustive")
+
+summary.out <- summary(regsubsets.out)
+as.data.frame(summary.out$outmat)
+library(car)
+subsets(regsubsets.out,statistic="adjr2",legend="bottomright",main="Adjusted R^2")
+```
+
 
 ### Best Two regressor model
+The best model is the one with length 3 and width, because it has 2 regressor, so this is the model we are looking for.
+
 
 ## Final Summary Statements
+Looking through all the data, we can see that the Perch fish had a high R squared value which was height and width. The Pike fish had a high R squared value which was length 1 and length 2. The final fish which was the Roach had a height R squared value which was length 3 and width. All of them contained 2 regressors which were the 2nd highest values.
